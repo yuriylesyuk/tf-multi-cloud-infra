@@ -34,4 +34,19 @@ variable "gcp_vpc_subnet_cidr" {
   type = string
 }
 
+variable "gcp_aws_vpc_target_gw" {
+  type = string
+}
 
+variable "gcp_aws_vpc_gw_name" {
+  type = string
+}
+
+
+variable "gcp_aws_vpn_tunnel1" {
+  type = string
+}
+
+variable "gcp_aws_vpn_tunnel2" {
+  type = string
+}
