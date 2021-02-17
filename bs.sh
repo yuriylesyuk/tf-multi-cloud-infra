@@ -12,17 +12,25 @@ REGION="europe-west1"
 ZONE="europe-west1-b"
 
 
-GCP_VARS=gcp.auto.tfvars
+GCP_TFVARS=gcp.auto.tfvars
+AWS_TFVARS=aws.auto.tfvars
 
-# lif $GCP_VARS "project = " $PROJECT
+
+# lif $GCP_TFVARS "project = " $PROJECT
 
 
-cat <<EOF > "$GCP_VARS"
+source mc-gcp-networking.env
+
+cat <<EOF > "$GCP_TFVARS"
 gcp_project_id = "$PROJECT"
 EOF
 
+awk -f env-to-tfvars.awk mc-gcp-networking.env >> "$GCP_TFVARS"
 
-source mc-networking.env
+source mc-aws-networking.env
 
-awk -f env-to-tfvars.awk mc-networking.env >> "$GCP_VARS"
+cat <<EOF > "$AWS_TFVARS"
+EOF
+
+awk -f env-to-tfvars.awk mc-aws-networking.env >> "$AWS_TFVARS"
 
