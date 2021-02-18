@@ -13,6 +13,9 @@ export GCP_OS_USERNAME=$(gcloud config get-value account | awk -F@ '{print $1}' 
 ssh-keygen -t rsa -C "gcp-key" -f ~/.ssh/id_gcp  -P ""
 export GCP_SSH_PUB_KEY_FILE=~/.ssh/id_gcp
 
+ssh-keygen -t rsa -C "aws-key" -f ~/.ssh/id_aws -P ""
+export AWS_KEY_NAME=aws-key
+export AWS_SSH_PUB_KEY_FILE=~/.ssh/id_aws
 
 # override if required
 REGION="europe-west1"
@@ -41,6 +44,8 @@ awk -f env-to-tfvars.awk mc-gcp-networking.env >> "$GCP_TFVARS"
 source mc-aws-networking.env
 
 cat <<EOF > "$AWS_TFVARS"
+aws_key_name = "$AWS_KEY_NAME"
+aws_ssh_pub_key_file = "$AWS_SSH_PUB_KEY_FILE"
 EOF
 
 awk -f env-to-tfvars.awk mc-aws-networking.env >> "$AWS_TFVARS"
