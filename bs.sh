@@ -7,6 +7,13 @@ BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
 export PROJECT=$(gcloud projects list|grep qwiklabs-gcp|awk '{print $1}')
+export GCP_OS_USERNAME=$(gcloud config get-value account | awk -F@ '{print $1}' )
+
+#
+ssh-keygen -t rsa -C "gcp-key" -f ~/.ssh/id_gcp  -P ""
+export GCP_SSH_PUB_KEY_FILE=~/.ssh/id_gcp
+
+
 # override if required
 REGION="europe-west1"
 ZONE="europe-west1-b"
@@ -23,6 +30,10 @@ source mc-gcp-networking.env
 
 cat <<EOF > "$GCP_TFVARS"
 gcp_project_id = "$PROJECT"
+
+gcp_os_username = "$GCP_OS_USERNAME"
+gcp_ssh_pub_key_file = "$GCP_SSH_PUB_KEY_FILE"
+
 EOF
 
 awk -f env-to-tfvars.awk mc-gcp-networking.env >> "$GCP_TFVARS"

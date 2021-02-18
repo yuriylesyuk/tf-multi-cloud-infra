@@ -47,6 +47,7 @@ variable "gcp_aws_vpn_tunnel1" {
   type = string
 }
 
-variable "gcp_aws_vpn_tunnel2" {
-  type = string
-}
+variable "gcp_aws_vpn_tunnel2" { type = string }
+
+variable "gcp_os_username" { type = string }
+variable "gcp_ssh_pub_key_file" { type = string }
