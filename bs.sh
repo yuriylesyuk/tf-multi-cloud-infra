@@ -11,11 +11,11 @@ export GCP_OS_USERNAME=$(gcloud config get-value account | awk -F@ '{print $1}' 
 
 #
 ssh-keygen -t rsa -C "gcp-key" -f ~/.ssh/id_gcp  -P ""
-export GCP_SSH_PUB_KEY_FILE=~/.ssh/id_gcp
+export GCP_SSH_PUB_KEY_FILE=~/.ssh/id_gcp.pub
 
 ssh-keygen -t rsa -C "aws-key" -f ~/.ssh/id_aws -P ""
 export AWS_KEY_NAME=aws-key
-export AWS_SSH_PUB_KEY_FILE=~/.ssh/id_aws
+export AWS_SSH_PUB_KEY_FILE=~/.ssh/id_aws.pub
 
 # override if required
 REGION="europe-west1"
