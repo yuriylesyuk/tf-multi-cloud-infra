@@ -22,8 +22,8 @@ REGION="europe-west1"
 ZONE="europe-west1-b"
 
 
-GCP_TFVARS=gcp.auto.tfvars
-AWS_TFVARS=aws.auto.tfvars
+GCP_TFVARS=gcp-aws-vpc-infra-tf/gcp.auto.tfvars
+AWS_TFVARS=gcp-aws-vpc-infra-tf/aws.auto.tfvars
 
 
 # lif $GCP_TFVARS "project = " $PROJECT
