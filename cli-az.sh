@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # rust to compile cryptography modules
-if ! [ -x "$(command -v jq)" ]; then
+if ! [ -x "$(command -v rustc)" ]; then
     echo "rustc is not found. installing it..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y -q
 fi
 
-pip3 install azure-cli
-source ~/.profile
+echo "install azure-cli into your ~ directory"
+pip3 install azure-cli > /dev/null
 
 echo "execute az login to authenticate"
 

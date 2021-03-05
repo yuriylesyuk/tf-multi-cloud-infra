@@ -1,7 +1,7 @@
 #!/bin/bash
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-$BASEDIR/bs-gcp-aws.sh"
+$BASEDIR/bs-gcp-aws.sh
 
 
 ssh-keygen -t rsa -C "az-key" -f ~/.ssh/id_az  -P ""
@@ -23,3 +23,14 @@ az_ssh_pub_key_file = "$AZ_SSH_PUB_KEY_FILE"
 
 EOF
 awk -f $BASEDIR/tf-env-to-tfvars.awk "$AZ_VARS" >> "$AZ_TFVARS"
+
+
+
+# tf: module 'import'
+GCP_AWS_INFRA=$BASEDIR/infra-gcp-aws-tf
+
+cp $GCP_AWS_INFRA/aws.auto.tfvars $AZ_INFRA
+cp $GCP_AWS_INFRA/gcp.auto.tfvars $AZ_INFRA
+
+awk -f $BASEDIR/tfi-module-include.awk $AZ_INFRA/az-modules.tfi > $AZ_INFRA/az-modules.tfi.tf
+
