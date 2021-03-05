@@ -1,8 +1,4 @@
 
-module "gcp_and_aws_infra" {
-  source = "../gcp-aws-vpc-infra-tf"
-}
-
 
 resource "azurerm_virtual_network" "az_vnet" {
   name                = var.az_vnet

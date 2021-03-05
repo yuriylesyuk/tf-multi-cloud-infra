@@ -1,7 +1,5 @@
 #!/bin/bash
-
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $BASEDIR/lib.sh
 
 # just bootstrap, nothing noughty, actually
 
@@ -21,15 +19,15 @@ export AWS_SSH_PUB_KEY_FILE=~/.ssh/id_aws.pub
 REGION="europe-west1"
 ZONE="europe-west1-b"
 
+GCP_AWS_INFRA=$BASEDIR/infra-gcp-aws-tf
 
-GCP_TFVARS=gcp-aws-vpc-infra-tf/gcp.auto.tfvars
-AWS_TFVARS=gcp-aws-vpc-infra-tf/aws.auto.tfvars
-
-
-# lif $GCP_TFVARS "project = " $PROJECT
+GCP_TFVARS=$GCP_AWS_INFRA/gcp.auto.tfvars
+AWS_TFVARS=$GCP_AWS_INFRA/aws.auto.tfvars
 
 
-source mc-gcp-networking.env
+GCP_VARS=$BASEDIR/mc-gcp-networking.env
+
+source $GCP_VARS
 
 cat <<EOF > "$GCP_TFVARS"
 gcp_project_id = "$PROJECT"
@@ -38,15 +36,17 @@ gcp_os_username = "$GCP_OS_USERNAME"
 gcp_ssh_pub_key_file = "$GCP_SSH_PUB_KEY_FILE"
 
 EOF
+awk -f $BASEDIR/tf-env-to-tfvars.awk $GCP_VARS >> "$GCP_TFVARS"
 
-awk -f env-to-tfvars.awk mc-gcp-networking.env >> "$GCP_TFVARS"
 
-source mc-aws-networking.env
+AWS_VARS=$BASEDIR/mc-aws-networking.env
+source $AWS_VARS
+
+
 
 cat <<EOF > "$AWS_TFVARS"
 aws_key_name = "$AWS_KEY_NAME"
 aws_ssh_pub_key_file = "$AWS_SSH_PUB_KEY_FILE"
 EOF
 
-awk -f env-to-tfvars.awk mc-aws-networking.env >> "$AWS_TFVARS"
-
+awk -f $BASEDIR/tf-env-to-tfvars.awk $AWS_VARS >> "$AWS_TFVARS"

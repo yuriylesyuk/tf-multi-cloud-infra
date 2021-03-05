@@ -32,3 +32,6 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore *.tfi.tf generated/duplicate file
+*.tfi.tf
