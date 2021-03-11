@@ -10,5 +10,16 @@ variable "az_vnet_subnet" { type = string }
 variable "az_vnet_cidr" { type = string }
 variable "az_vnet_subnet_cidr" { type = string }
 
+variable "az_gcp_lgw_ip1_name" { type = string }
+variable "az_gcp_lgw_ip2_name" { type = string }
+
+variable "az_gcp_vnet_gw_ip1_name" { type = string }
+variable "az_gcp_vnet_gw_ip2_name" { type = string }
+
+variable "az_vnet_gw" { type = string }
+
+
 
 variable "az_ssh_pub_key_file" { type = string }
+
+
