@@ -1,6 +1,6 @@
 
 module "gcp_and_aws_infra" {
-  source = "../infra-gcp-aws-tf"
+  source = "../infra-gcp-aws-tfm"
 
   # include: aws-variables.tf
 
