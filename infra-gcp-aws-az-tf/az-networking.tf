@@ -26,23 +26,23 @@ resource "azurerm_subnet" "gateway_subnet" {
 
 #  Local network gateway 1
 resource "azurerm_local_network_gateway" "az_gcp_lgw1" {
-  name = var.az_gcp_lgw1_name
-  
+  name = var.az_local_gw1_name
+
   resource_group_name = var.resource_group
   location = var.az_region
 
   gateway_address = google_compute_address.gcp_az_vpc_gw1_ip.address
-  address_space = [ var.gcp_vpc_cdr ]
+  address_space = [ var.gcp_vpc_cidr ]
 }
 
 #  Local network gateway 2
 resource "azurerm_local_network_gateway" "az_gcp_lgw2" {
-  name = var.az_gcp_lgw2_name
+  name = var.az_local_gw2_name
   resource_group_name = var.resource_group
 
   location = var.az_region
   gateway_address = google_compute_address.gcp_az_vpc_gw2_ip.address
-  address_space = [ var.gcp_vpc_cdr ]
+  address_space = [ var.gcp_vpc_cidr ]
 }
 
 # Azure: Request  Dynamic Public IP addresses
@@ -79,7 +79,7 @@ resource "azurerm_virtual_network_gateway" "az_vnet_gw" {
 
   ip_configuration {
     name = "gw-ip1"
-    public_ip_address_id = azurerm_public_ip.az_gcp_gw_ip1.id
+    public_ip_address_id = azurerm_public_ip.az_gcp_vnet_gw_ip1.id
     subnet_id = azurerm_subnet.gateway_subnet.id
   }
 
@@ -104,7 +104,7 @@ resource "azurerm_virtual_network_gateway_connection" "az_gcp_vnet_to_vpc1" {
   virtual_network_gateway_id = azurerm_virtual_network_gateway.az_vnet_gw.id
   local_network_gateway_id = azurerm_local_network_gateway.az_gcp_lgw1.id
 
-  shared_key = random_id.az_psk1.b64
+  shared_key = random_id.az_psk1.b64_std
 }
 
 resource "random_id" "az_psk2" {
@@ -120,5 +120,5 @@ resource "azurerm_virtual_network_gateway_connection" "az_gcp_vnet_to_vpc2" {
   virtual_network_gateway_id = azurerm_virtual_network_gateway.az_vnet_gw.id
   local_network_gateway_id = azurerm_local_network_gateway.az_gcp_lgw2.id
 
-  shared_key = random_id.az_psk2.b64
+  shared_key = random_id.az_psk2.b64_std
 }

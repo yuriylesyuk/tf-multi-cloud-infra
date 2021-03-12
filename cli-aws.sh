@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 
 # aws, eksctl
 curl -O https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip

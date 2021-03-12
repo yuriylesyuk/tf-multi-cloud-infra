@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # rust to compile cryptography modules
 if ! [ -x "$(command -v rustc)" ]; then
     echo "rustc is not found. installing it..."
