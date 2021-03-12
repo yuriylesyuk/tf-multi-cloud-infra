@@ -1,28 +1,37 @@
 #!/bin/bash
+
+set -x
+
+
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# just bootstrap, nothing noughty, actually
+export TF_DIR=${TF_DIR:-$BASEDIR/infra-gcp-aws-tf}
 
-
-export PROJECT=$(gcloud projects list|grep qwiklabs-gcp|awk '{print $1}')
-export GCP_OS_USERNAME=$(gcloud config get-value account | awk -F@ '{print $1}' )
 
 #
-ssh-keygen -t rsa -C "gcp-key" -f ~/.ssh/id_gcp  -P ""
+if [ -f ~/.ssh/id_az ]; then
+  ssh-keygen -t rsa -C "gcp-key" -f ~/.ssh/id_gcp  -P ""
+fi
 export GCP_SSH_PUB_KEY_FILE=~/.ssh/id_gcp.pub
 
-ssh-keygen -t rsa -C "aws-key" -f ~/.ssh/id_aws -P ""
+if [ -f ~/.ssh/id_az ]; then
+  ssh-keygen -t rsa -C "aws-key" -f ~/.ssh/id_aws -P ""
+fi
 export AWS_KEY_NAME=aws-key
 export AWS_SSH_PUB_KEY_FILE=~/.ssh/id_aws.pub
+
+
+#
+# GCP
+#
 
 # override if required
 REGION="europe-west1"
 ZONE="europe-west1-b"
 
-GCP_AWS_INFRA=$BASEDIR/infra-gcp-aws-tf
 
-GCP_TFVARS=$GCP_AWS_INFRA/gcp.auto.tfvars
-AWS_TFVARS=$GCP_AWS_INFRA/aws.auto.tfvars
+GCP_TFVARS=$TF_DIR/gcp.auto.tfvars
+AWS_TFVARS=$TF_DIR/aws.auto.tfvars
 
 
 GCP_VARS=$BASEDIR/mc-gcp-networking.env
@@ -39,6 +48,10 @@ EOF
 awk -f $BASEDIR/tf-env-to-tfvars.awk $GCP_VARS >> "$GCP_TFVARS"
 
 
+#
+# AWS
+#
+
 AWS_VARS=$BASEDIR/mc-aws-networking.env
 source $AWS_VARS
 
@@ -50,3 +63,7 @@ aws_ssh_pub_key_file = "$AWS_SSH_PUB_KEY_FILE"
 EOF
 
 awk -f $BASEDIR/tf-env-to-tfvars.awk $AWS_VARS >> "$AWS_TFVARS"
+
+
+# process .tfi modules [TODO: [ ] hard-coded right now]
+awk -f $BASEDIR/tfi-module-include.awk $TF_DIR/modules.tfi > $TF_DIR/modules.tfi.tf

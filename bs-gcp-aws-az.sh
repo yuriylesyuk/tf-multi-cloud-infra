@@ -1,10 +1,13 @@
 #!/bin/bash
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+export TF_DIR=${TF_DIR:-$BASEDIR/infra-gcp-aws-az-tf}
+
 $BASEDIR/bs-gcp-aws.sh
 
-
-ssh-keygen -t rsa -C "az-key" -f ~/.ssh/id_az  -P ""
+if [ -f ~/.ssh/id_az ]; then
+  ssh-keygen -t rsa -C "az-key" -f ~/.ssh/id_az  -P ""
+fi
 export AZ_SSH_PUB_KEY_FILE=~/.ssh/id_az.pub
 
 
@@ -16,13 +19,9 @@ AWS_VARS=$BASEDIR/mc-aws-networking.env
 source $AWS_VARS
 
 
-AZ_INFRA=$BASEDIR/infra-gcp-aws-az-tf
 AZ_VARS=$BASEDIR/mc-az-networking.env
-AZ_TFVARS=$AZ_INFRA/az.auto.tfvars
 
-
-# lif $GCP_TFVARS "project = " $PROJECT
-
+AZ_TFVARS=$TF_DIR/az.auto.tfvars
 
 source $AZ_VARS
 
@@ -31,14 +30,3 @@ az_ssh_pub_key_file = "$AZ_SSH_PUB_KEY_FILE"
 
 EOF
 awk -f $BASEDIR/tf-env-to-tfvars.awk "$AZ_VARS" >> "$AZ_TFVARS"
-
-
-
-# tf: module 'import'
-GCP_AWS_INFRA=$BASEDIR/infra-gcp-aws-tf
-
-cp $GCP_AWS_INFRA/aws.auto.tfvars $AZ_INFRA
-cp $GCP_AWS_INFRA/gcp.auto.tfvars $AZ_INFRA
-
-awk -f $BASEDIR/tfi-module-include.awk $AZ_INFRA/az-modules.tfi > $AZ_INFRA/az-modules.tfi.tf
-
