@@ -6,12 +6,18 @@ resource "azurerm_virtual_network" "az_vnet" {
 
   resource_group_name = var.resource_group
   address_space = [ var.az_vnet_cidr ]
-
-  subnet {
-    name = var.az_vnet_subnet
-    address_prefix = var.az_vnet_subnet_cidr
-  }
 }
+
+resource "azurerm_subnet" "az_vnet_subnet" {
+  name = var.az_vnet_subnet
+
+  resource_group_name = var.resource_group
+  virtual_network_name = azurerm_virtual_network.az_vnet.name
+
+  address_prefixes = [ var.az_vnet_subnet_cidr ]
+}
+
+
 
 # Create the gateway subnet
 resource "azurerm_subnet" "gateway_subnet" {
@@ -41,7 +47,7 @@ resource "azurerm_local_network_gateway" "az_gcp_lgw2" {
   resource_group_name = var.resource_group
 
   location = var.az_region
-  gateway_address = google_compute_address.gcp_az_vpc_gw2_ip.address
+  gateway_address = google_compute_address.gcp_az_vpc_gw1_ip.address
   address_space = [ var.gcp_vpc_cidr ]
 }
 

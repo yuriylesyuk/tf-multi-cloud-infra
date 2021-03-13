@@ -2,21 +2,26 @@
 
 # IP Address for Local network gateway 1
 resource "google_compute_address" "gcp_az_vpc_gw1_ip" {
-  name   = var.gcp_az_vpc_gw1_ip_name
+  name = var.gcp_az_vpc_gw1_ip_name
   region = var.gcp_region
+  project = var.gcp_project_id
 }
+
+/* https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-activeactive-rm-powershell#part-2---establish-an-active-active-cross-premises-connection
 
 # IP Address for Local network gateway 2
 resource "google_compute_address" "gcp_az_vpc_gw2_ip" {
   name   = var.gcp_az_vpc_gw2_ip_name
   region = var.gcp_region
+  project = var.gcp_project_id
 }
-
+*/
 
 # GCP: to Azure: target vpn gateway and forwarding rules
 resource "google_compute_vpn_gateway" "gcp_az_vpc_tgt_gw" {
   name = var.gcp_az_vpc_tgt_gw
   network = var.gcp_vpc
+  region = var.gcp_region
 }
 
 resource "google_compute_forwarding_rule" "fr1_gcp_az_vpc_tgt_gw_az_esp" {
@@ -24,6 +29,7 @@ resource "google_compute_forwarding_rule" "fr1_gcp_az_vpc_tgt_gw_az_esp" {
   ip_protocol = "ESP"
   ip_address = google_compute_address.gcp_az_vpc_gw1_ip.address
   target = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 }
 resource "google_compute_forwarding_rule" "fr1_gcp_az_vpc_tgt_gw_az_udp500" {
   name = "fr1-${var.gcp_az_vpc_tgt_gw}-az-udp500"
@@ -31,20 +37,25 @@ resource "google_compute_forwarding_rule" "fr1_gcp_az_vpc_tgt_gw_az_udp500" {
   port_range  = "500"
   ip_address = google_compute_address.gcp_az_vpc_gw1_ip.address
   target = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 }
 resource "google_compute_forwarding_rule" "fr1_gcp_az_vpc_tgt_gw_az_udp4500" {
   name = "fr1-${var.gcp_az_vpc_tgt_gw}-az-udp4500"
   ip_protocol = "UDP"
-  port_range  = "500"
+  port_range  = "4500"
   ip_address = google_compute_address.gcp_az_vpc_gw1_ip.address
   target = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 }
+
+/* TODO: active-activee cross full mesh
 
 resource "google_compute_forwarding_rule" "fr2_gcp_az_vpc_tgt_gw_az_esp" {
   name = "fr2-${var.gcp_az_vpc_tgt_gw}-az-esp"
   ip_protocol = "ESP"
   ip_address = google_compute_address.gcp_az_vpc_gw2_ip.address
   target = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 }
 resource "google_compute_forwarding_rule" "fr2_gcp_az_vpc_tgt_gw_az_udp500" {
   name = "fr2-${var.gcp_az_vpc_tgt_gw}-az-udp500"
@@ -52,15 +63,17 @@ resource "google_compute_forwarding_rule" "fr2_gcp_az_vpc_tgt_gw_az_udp500" {
   port_range  = "500"
   ip_address = google_compute_address.gcp_az_vpc_gw2_ip.address
   target = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 }
 resource "google_compute_forwarding_rule" "fr2_gcp_az_vpc_tgt_gw_az_udp4500" {
   name = "fr2-${var.gcp_az_vpc_tgt_gw}-az-udp4500"
   ip_protocol = "UDP"
-  port_range  = "500"
+  port_range  = "4500"
   ip_address = google_compute_address.gcp_az_vpc_gw2_ip.address
   target = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 }
-
+*/
 
 # GCP: Create the Cloud VPN tunnels
 
@@ -75,6 +88,7 @@ resource "google_compute_vpn_tunnel" "gcp_az_vpn_tunnel1" {
   remote_traffic_selector = [ "0.0.0.0/0" ]
 
   target_vpn_gateway = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 
   depends_on = [
     google_compute_forwarding_rule.fr1_gcp_az_vpc_tgt_gw_az_esp,
@@ -104,11 +118,12 @@ resource "google_compute_vpn_tunnel" "gcp_az_vpn_tunnel2" {
   remote_traffic_selector = [ "0.0.0.0/0" ]
 
   target_vpn_gateway = google_compute_vpn_gateway.gcp_az_vpc_tgt_gw.id
+  region = var.gcp_region
 
   depends_on = [
-    google_compute_forwarding_rule.fr2_gcp_az_vpc_tgt_gw_az_esp,
-    google_compute_forwarding_rule.fr2_gcp_az_vpc_tgt_gw_az_udp500,
-    google_compute_forwarding_rule.fr2_gcp_az_vpc_tgt_gw_az_udp4500,
+    google_compute_forwarding_rule.fr1_gcp_az_vpc_tgt_gw_az_esp,
+    google_compute_forwarding_rule.fr1_gcp_az_vpc_tgt_gw_az_udp500,
+    google_compute_forwarding_rule.fr1_gcp_az_vpc_tgt_gw_az_udp4500,
   ]
 }
 

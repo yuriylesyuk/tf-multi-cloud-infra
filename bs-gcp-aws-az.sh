@@ -5,9 +5,10 @@ export TF_DIR=${TF_DIR:-$BASEDIR/infra-gcp-aws-az-tf}
 
 $BASEDIR/bs-gcp-aws.sh
 
-if [ -f ~/.ssh/id_az ]; then
+if [ ! -f ~/.ssh/id_az ]; then
   ssh-keygen -t rsa -C "az-key" -f ~/.ssh/id_az  -P ""
 fi
+export AZ_USERNAME=azureuser
 export AZ_SSH_PUB_KEY_FILE=~/.ssh/id_az.pub
 
 
@@ -26,6 +27,7 @@ AZ_TFVARS=$TF_DIR/az.auto.tfvars
 source $AZ_VARS
 
 cat <<EOF > "$AZ_TFVARS"
+username = "$AZ_USERNAME"
 az_ssh_pub_key_file = "$AZ_SSH_PUB_KEY_FILE"
 
 EOF
