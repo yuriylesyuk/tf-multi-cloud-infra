@@ -1,9 +1,17 @@
+data "aws_vpc" "aws_vpc" {
+  id = module.gcp_and_aws_infra.aws_vpc_id
+}
+
+data "aws_vpn_gateway" "aws_vpn_gw" {
+  id = module.gcp_and_aws_infra.aws_vpn_gw_id
+}
+
 
 # AWS: 
 resource "aws_customer_gateway" "aws_az_cgw" {
   bgp_asn = 65000
   ip_address = azurerm_public_ip.az_gcp_vnet_gw_ip1.ip_address
-  
+
   type = "ipsec.1"
 
   tags = {
@@ -12,10 +20,12 @@ resource "aws_customer_gateway" "aws_az_cgw" {
 }
 
 resource "aws_vpn_connection" "aws_az_vpn_connection" {
-  vpn_gateway_id      = aws_vpn_gateway.aws_vpn_gw.id
+  vpn_gateway_id = data.aws_vpn_gateway.aws_vpn_gw.id
   customer_gateway_id = aws_customer_gateway.aws_az_cgw.id
+
   type = "ipsec.1"
   static_routes_only  = true
+
   tags = {
     "Name" = var.aws_az_vpn_connection
   }
@@ -70,13 +80,14 @@ resource "azurerm_virtual_network_gateway_connection" "az_aws_vnet_to_vpc2" {
 # AWS: routes
 # vpn gw for gcp vpc traffic
 resource "aws_route" "aws_az_vpc_route" {
-  route_table_id = aws_vpc.aws_vpc.default_route_table_id
-  destination_cidr_block = var.az_vpc_cidr
-  gateway_id = aws_vpn_gateway.aws_vpn_gw.id
+  route_table_id = data.aws_vpc.aws_vpc.main_route_table_id
+
+  destination_cidr_block = var.az_vnet_cidr
+  gateway_id = data.aws_vpn_gateway.aws_vpn_gw.id
 }
 
 resource "aws_vpn_connection_route" "aws-to-az" {
-  destination_cidr_block = var.az_vpc_cidr
+  destination_cidr_block = var.az_vnet_cidr
   vpn_connection_id = aws_vpn_connection.aws_az_vpn_connection.id
 }
 

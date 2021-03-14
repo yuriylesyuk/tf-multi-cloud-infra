@@ -27,7 +27,7 @@ AZ_TFVARS=$TF_DIR/az.auto.tfvars
 source $AZ_VARS
 
 cat <<EOF > "$AZ_TFVARS"
-username = "$AZ_USERNAME"
+az_username = "$AZ_USERNAME"
 az_ssh_pub_key_file = "$AZ_SSH_PUB_KEY_FILE"
 
 EOF

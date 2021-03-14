@@ -13,6 +13,9 @@ variable "az_vnet_subnet_cidr" { type = string }
 variable "az_gcp_lgw_ip1_name" { type = string }
 variable "az_gcp_lgw_ip2_name" { type = string }
 
+variable "az_gcp_lgw1_name" { type = string }
+variable "az_gcp_lgw2_name" { type = string }
+
 variable "az_gcp_vnet_gw_ip1_name" { type = string }
 variable "az_gcp_vnet_gw_ip2_name" { type = string }
 
