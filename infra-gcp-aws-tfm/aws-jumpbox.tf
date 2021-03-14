@@ -24,7 +24,7 @@ resource "aws_internet_gateway" "aws_vpc_igw" {
 
 # security: routes and security groups
 # vpn gw for gcp vpc traffic
-resource "aws_route" "simulation_default_route" {
+resource "aws_route" "aws_gcp_vpc_route" {
   route_table_id = aws_vpc.aws_vpc.default_route_table_id
   destination_cidr_block = var.gcp_vpc_cidr
   gateway_id = aws_vpn_gateway.aws_vpn_gw.id

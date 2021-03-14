@@ -32,7 +32,7 @@ resource "azurerm_subnet" "gateway_subnet" {
 
 #  Local network gateway 1
 resource "azurerm_local_network_gateway" "az_gcp_lgw1" {
-  name = var.az_local_gw1_name
+  name = var.az_gcp_lgw1_name
 
   resource_group_name = var.resource_group
   location = var.az_region
@@ -43,7 +43,7 @@ resource "azurerm_local_network_gateway" "az_gcp_lgw1" {
 
 #  Local network gateway 2
 resource "azurerm_local_network_gateway" "az_gcp_lgw2" {
-  name = var.az_local_gw2_name
+  name = var.az_gcp_gw2_name
   resource_group_name = var.resource_group
 
   location = var.az_region
