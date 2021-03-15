@@ -1,6 +1,11 @@
 #!/bin/bash
-
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. $BASEDIR/lib.sh
+
+set -e
+
+check_envvars "PROJECT GCP_OS_USERNAME"
+check_commands "gcloud aws terraform"
 
 export TF_DIR=${TF_DIR:-$BASEDIR/infra-gcp-aws-tf}
 
