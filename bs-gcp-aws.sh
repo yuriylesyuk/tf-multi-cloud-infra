@@ -11,12 +11,12 @@ export TF_DIR=${TF_DIR:-$BASEDIR/infra-gcp-aws-tf}
 
 
 #
-if [ ! -f ~/.ssh/id_az ]; then
+if [ ! -f ~/.ssh/id_gcp ]; then
   ssh-keygen -t rsa -C "gcp-key" -f ~/.ssh/id_gcp  -P ""
 fi
 export GCP_SSH_PUB_KEY_FILE=~/.ssh/id_gcp.pub
 
-if [ ! -f ~/.ssh/id_az ]; then
+if [ ! -f ~/.ssh/id_aws ]; then
   ssh-keygen -t rsa -C "aws-key" -f ~/.ssh/id_aws -P ""
 fi
 export AWS_KEY_NAME=aws-key
