@@ -7,15 +7,17 @@ data "aws_vpn_gateway" "aws_vpn_gw" {
 }
 
 data "azurerm_public_ip" "az_gcp_vnet_gw_ip1_ref" {
-  name = var.az_gcp_vnet_gw_ip1_name
+  name = azurerm_public_ip.az_gcp_vnet_gw_ip1.name
   resource_group_name = var.resource_group
+
+  depends_on = [ azurerm_virtual_network_gateway.az_vnet_gw ]
 }
 
 
 # AWS: 
 resource "aws_customer_gateway" "aws_az_cgw" {
   bgp_asn = 65000
-  ip_address = azurerm_public_ip.az_gcp_vnet_gw_ip1_ref.ip_address
+  ip_address = data.azurerm_public_ip.az_gcp_vnet_gw_ip1_ref.ip_address
 
   type = "ipsec.1"
 
