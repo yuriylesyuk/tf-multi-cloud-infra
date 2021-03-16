@@ -17,6 +17,10 @@ resource "aws_customer_gateway" "aws_az_cgw" {
   tags = {
     "Name" = var.aws_az_customer_gw
   }
+
+  depends_on = [
+    azurerm_virtual_network_gateway.az_vnet_gw
+  ]
 }
 
 resource "aws_vpn_connection" "aws_az_vpn_connection" {
