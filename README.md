@@ -10,21 +10,23 @@ Of course, you need an active account at each of the two or three clouds.
 
 ?. Create a VM. Doesn't matter which OS you're using. The only difference is usage of apt vs yum for installing required packages. We accept defaults to speed up this step, thus we are using Debian.
 
-
 ?. SSH into it
 
 ?. Install utilites required by cloud cli utilities
 
-```
+```sh
 sudo apt -y install mc jq git python3-pip
 ```
+
 ?. 
-```
+
+```sh
 git clone https://github.com/yuriylesyuk/tf-multi-cloud-infra.git
 ```
 
 ?. CLIs
-```
+
+```sh
 cd tf-multi-cloud-infra
 
 ./cli-terraform.sh
@@ -36,8 +38,9 @@ source ~/.profile
 
 ### Cloud Logins
 
-?. GCP: For Qwiklabs/CloudShell: 
-```
+?. GCP: For Qwiklabs/CloudShell:
+
+```sh
 ## for operator
 gcloud auth login --quiet
 
@@ -58,7 +61,8 @@ gcloud auth application-default login --quiet
 ?. AWS
 
 ?. for a current session
-```
+
+```sh
 export AWS_PAGER=
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
@@ -66,7 +70,8 @@ export AWS_REGION=us-east-1
 ```
 
 ?. user-wide
-```
+
+```sh
 mkdir ~/.aws
 cat <<EOF > ~/.aws/credentials
 
@@ -76,36 +81,38 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
 
 region = $AWS_REGION
 EOF
+```
 
-```
 ?. Azure
-```
+
+```sh
 az login
 ```
 
 ## Create Infrastructure
 
 ?. to install gcp/aws, execute
-```
+
+```sh
 ./install-gcp-aws.sh
 ```
 
-## gcp-aws-az
-
 ?. to install gcp/aws/azure, execute
-```
+
+```sh
 install-gcp-aws-az.sh
 ```
 
 > NOTE: to see the plan, use
-> ```
+> ```sh
 > terraform plan 2>&1| less -r
 > ```
 
 ### Validate connectivity
+
 After the install finished, you can use provisioned jumpboxes and suggested commands to check connectivity bewtween VPCs.
 
-```
+```sh
 # to define jumpboxes IP address
 source <(terraform output |awk '{printf( "export %s=%s\n", toupper($1), $3)}')
 
