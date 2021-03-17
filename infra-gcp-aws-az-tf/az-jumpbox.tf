@@ -10,6 +10,14 @@ resource "azurerm_public_ip" "vm_az_pip" {
   allocation_method   = "Dynamic"
 }
 
+
+data "azurerm_public_ip" "vm_az_pip_ref" {
+  name = azurerm_public_ip.vm_az_pip.name
+  resource_group_name = var.resource_group
+
+  depends_on = [ azurerm_virtual_machine.vm_az ]
+}
+
 resource "azurerm_network_interface" "vm_az_nic" {
   name = "vm-az-nic"
 
@@ -59,10 +67,4 @@ resource "azurerm_virtual_machine" "vm_az" {
       key_data =file(var.az_ssh_pub_key_file)
     }
   }
-}
-
-output "az_jumpbox_ip" {
- # value = azurerm_.ip_address
- value = azurerm_public_ip.vm_az_pip.ip_address
-
 }
