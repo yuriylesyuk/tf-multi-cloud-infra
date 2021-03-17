@@ -20,7 +20,7 @@ resource "google_compute_address" "gcp_az_vpc_gw2_ip" {
 # GCP: to Azure: target vpn gateway and forwarding rules
 resource "google_compute_vpn_gateway" "gcp_az_vpc_tgt_gw" {
   name = var.gcp_az_vpc_tgt_gw
-  network = var.gcp_vpc
+  network = module.gcp_and_aws_infra.gcp_vpc_id
   region = var.gcp_region
 }
 
@@ -79,7 +79,7 @@ resource "google_compute_forwarding_rule" "fr2_gcp_az_vpc_tgt_gw_az_udp4500" {
 
 resource "google_compute_vpn_tunnel" "gcp_az_vpn_tunnel1" {
   name = var.gcp_az_vpn_tunnel1
-  peer_ip = azurerm_public_ip.az_gcp_vnet_gw_ip1.ip_address
+  peer_ip = data.azurerm_public_ip.az_gcp_vnet_gw_ip1_ref.ip_address
 
   ike_version = 2
   shared_secret = random_id.az_psk1.b64_std
@@ -109,7 +109,7 @@ resource "google_compute_route" "gcp_az_vpc_vpn_route1" {
 
 resource "google_compute_vpn_tunnel" "gcp_az_vpn_tunnel2" {
   name = var.gcp_az_vpn_tunnel2
-  peer_ip = azurerm_public_ip.az_gcp_vnet_gw_ip2.ip_address
+  peer_ip = data.azurerm_public_ip.az_gcp_vnet_gw_ip2_ref.ip_address
 
   ike_version = 2
   shared_secret = random_id.az_psk2.b64_std

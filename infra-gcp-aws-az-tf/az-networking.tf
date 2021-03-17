@@ -61,6 +61,13 @@ resource "azurerm_public_ip" "az_gcp_vnet_gw_ip1" {
   allocation_method = "Dynamic"
 }
 
+data "azurerm_public_ip" "az_gcp_vnet_gw_ip1_ref" {
+  name = azurerm_public_ip.az_gcp_vnet_gw_ip1.name
+  resource_group_name = var.resource_group
+
+  depends_on = [ azurerm_virtual_network_gateway.az_vnet_gw ]
+}
+
 resource "azurerm_public_ip" "az_gcp_vnet_gw_ip2" {
   name = var.az_gcp_vnet_gw_ip2_name
 
@@ -68,6 +75,13 @@ resource "azurerm_public_ip" "az_gcp_vnet_gw_ip2" {
   location = var.az_region
 
   allocation_method = "Dynamic"
+}
+
+data "azurerm_public_ip" "az_gcp_vnet_gw_ip2_ref" {
+  name = azurerm_public_ip.az_gcp_vnet_gw_ip2.name
+  resource_group_name = var.resource_group
+
+  depends_on = [ azurerm_virtual_network_gateway.az_vnet_gw ]
 }
 
 # Azure: Create the VPN gateway with Active-Active Configuration
